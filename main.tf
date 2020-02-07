@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "east-us-2"
+  region = "us-east-1"
 }
 
 resource "aws_vpc" "dev-vpc-hbcc" {
