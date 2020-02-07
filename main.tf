@@ -13,7 +13,7 @@ resource "aws_vpc" "dev-vpc-hbcc" {
 
 resource "aws_instance" "dev-ec2-www" {
   ami                    = "ami-062f7200baf2fa504"
-  isntance_type          = "t2.micro"
+  instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.dev-sg-hbcc.id]
 
   user_data = <<-EOF
