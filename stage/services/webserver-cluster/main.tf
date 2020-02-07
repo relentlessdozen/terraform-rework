@@ -2,13 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "server_port" {
-  description = "Server port to allow HTTP requests"
-  type        = number
-  default     = 8080
-}
-
-
 resource "aws_vpc" "dev-vpc-hbcc" {
   cidr_block = "10.0.0.0/16"
 
@@ -149,9 +142,4 @@ resource "aws_security_group" "dev-sg-hbcc" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-output "alb_dns_name" {
-  value       = aws_lb.dev-lb.dns_name
-  description = "The dns for load balance"
 }
