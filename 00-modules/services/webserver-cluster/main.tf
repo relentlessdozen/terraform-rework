@@ -2,6 +2,21 @@ provider "aws" {
   region = "us-east-1"
 }
 
+## Backend ##
+
+terraform {
+  backend "s3" {
+    # Bucket name from above goes here
+    bucket = "tf-state-rework-pp"
+    key    = "stage/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-1"
+
+    # Dynamo DB table from above goes here
+    dynamodb_table = "pp-tf-state-locks"
+    encrypt        = true
+  }
+}
+
 resource "aws_vpc" "dev-vpc-hbcc" {
   cidr_block = "10.0.0.0/16"
 
