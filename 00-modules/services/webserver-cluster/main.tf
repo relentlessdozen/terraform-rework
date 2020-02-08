@@ -1,5 +1,8 @@
 provider "aws" {
   region = "us-east-1"
+
+  # Version identifier
+  verion = "~> 2.0"
 }
 
 ## Backend ##
@@ -34,16 +37,22 @@ data "aws_subnet_ids" "dev-vpc-hbcc" {
   vpc_id = data.aws_vpc.dev-vpc-hbcc.id
 }
 
+data "template_file" "user_data" {
+  template = file("user-data.sh")
+
+  vars = {
+    server_port = var.server_port
+    db_address  = data.terraform_remote_state.db.outputs.address
+    db_port     = data.terraform_remote_state.db.outputs.port
+  }
+}
+
 resource "aws_launch_configuration" "dev-ec2-www" {
   image_id        = "ami-07ebfd5b3428b6f4d"
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.dev-sg-hbcc.id]
+  user_data       = data.template_file.user_data.rendered
 
-  user_data = <<-EOF
-                #!/bin/bash
-                echo "Please, Go to the sky" > index.html
-                nohup busybox httpd -f -p ${var.server_port} &
-                EOF
   # Required since we are pointing to an old resource after replacing it
   lifecycle {
     create_before_destroy = true
